@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Welcome, {{ user.username }}!</h1>
+
+<p>
+  Subscription Status: 
+  {% if profile.subscription_active %}
+    <span style="color: green; font-weight: bold;">Active</span>
+    (Valid until: {{ profile.subscription_end|date:"d M Y H:i" }})
+  {% else %}
+    <span style="color: red; font-weight: bold;">Not Active</span>
+  {% endif %}
+</p>
+
+<a href="{% url 'payment' %}">
+  {% if profile.subscription_active %}
+    Renew Subscription
+  {% else %}
+    Pay Subscription
+  {% endif %}
+</a>
+{% endblock %}

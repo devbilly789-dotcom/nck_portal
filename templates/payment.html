@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Pay Subscription</h1>
+
+{% if profile.subscription_active %}
+    <p style="color: green; font-weight: bold;">
+        Your subscription is already active until {{ profile.subscription_end|date:"d M Y H:i" }}
+    </p>
+
+{% elif existing_payment %}
+    <p style="color: orange; font-weight: bold;">
+        You already submitted a payment. Waiting for admin approval.
+    </p>
+
+{% else %}
+
+    <div style="background:#f0f0f0; padding:15px; margin-bottom:20px;">
+        <h3>Payment Instructions</h3>
+        <p>Send Ksh 200 to the number below for monthly subscription:</p>
+        <p style="font-size:20px; font-weight:bold; color:blue;">
+            0114245222
+        </p>
+        <p>After payment, enter your M-Pesa confirmation code below.</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label>M-Pesa Code:</label><br>
+        <input type="text" name="mpesa_code" required>
+        <br><br>
+        <button type="submit">Submit Payment</button>
+    </form>
+
+{% endif %}
+
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+{% endblock %}
