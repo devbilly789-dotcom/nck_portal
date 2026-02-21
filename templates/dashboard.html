@@ -1,22 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
+
 <h1>Welcome, {{ user.username }}!</h1>
 
 <p>
-  Subscription Status: 
+  Subscription Status:
   {% if profile.subscription_active %}
-    <span style="color: green; font-weight: bold;">Active</span>
-    (Valid until: {{ profile.subscription_end|date:"d M Y H:i" }})
+      <span style="color: green; font-weight: bold;">
+          ✅ Active
+      </span>
+      <br>
+      Valid until: {{ profile.subscription_end|date:"d M Y H:i" }}
+
+  {% elif latest_payment and not latest_payment.approved %}
+      <span style="color: orange; font-weight: bold;">
+          ⏳ Waiting for verification...
+      </span>
+
   {% else %}
-    <span style="color: red; font-weight: bold;">Not Active</span>
+      <span style="color: red; font-weight: bold;">
+          ❌ Not Active
+      </span>
   {% endif %}
 </p>
 
-<a href="{% url 'payment' %}">
-  {% if profile.subscription_active %}
-    Renew Subscription
-  {% else %}
-    Pay Subscription
-  {% endif %}
-</a>
+<hr>
+
+{% if profile.subscription_active %}
+
+    <a href="{% url 'question_list' %}">
+        📚 Start Questions
+    </a>
+    <br><br>
+    <a href="{% url 'payment' %}">
+        🔄 Renew Subscription
+    </a>
+
+{% elif latest_payment and not latest_payment.approved %}
+
+    <p style="color: orange;">
+        Your payment has been submitted and is awaiting approval.
+    </p>
+
+{% else %}
+
+    <a href="{% url 'payment' %}">
+        💳 Pay Subscription
+    </a>
+
+{% endif %}
+
 {% endblock %}
