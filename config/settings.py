@@ -10,13 +10,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==========================
 # SECURITY
 # ==========================
+# Secret key from environment variable (set this on Render)
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
-# Set DEBUG=False in production
+# DEBUG mode controlled via environment variable
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Allowed hosts
-ALLOWED_HOSTS = ['nck-portal.onrender.com']
+# Allowed hosts (your Render URL)
+ALLOWED_HOSTS = ['nck-portal-7.onrender.com']
+
+# CSRF trusted origins for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://nck-portal.onrender.com',
+]
 
 # ==========================
 # APPLICATIONS
@@ -38,7 +44,7 @@ INSTALLED_APPS = [
 # ==========================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,7 +65,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],   # Global templates folder
+        'DIRS': [BASE_DIR / 'templates'],  # Global templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,7 +78,7 @@ TEMPLATES = [
 ]
 
 # ==========================
-# DATABASE (SQLite by default)
+# DATABASE (SQLite)
 # ==========================
 DATABASES = {
     'default': {
@@ -103,8 +109,8 @@ USE_TZ = True
 # STATIC FILES
 # ==========================
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']   # Dev static folder
-STATIC_ROOT = BASE_DIR / 'staticfiles'     # For production collectstatic
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Dev static folder
+STATIC_ROOT = BASE_DIR / 'staticfiles'    # For production collectstatic
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ==========================
