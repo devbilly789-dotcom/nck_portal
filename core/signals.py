@@ -19,10 +19,15 @@ def create_profile(sender, instance, created, **kwargs):
 # ACTIVATE SUBSCRIPTION WHEN PAYMENT IS APPROVED
 # ==========================
 @receiver(post_save, sender=Payment)
-def activate_subscription(sender, instance, **kwargs):
+def activate_subscription(sender, instance, created, **kwargs):
+
+    # Only activate if payment is approved
+    # AND subscription is not already active
     if instance.approved:
         profile = instance.student.profile
-        profile.subscription_active = True
-        profile.subscription_start = timezone.now()
-        profile.subscription_end = timezone.now() + timedelta(days=30)
-        profile.save()
+
+        if not profile.subscription_active:
+            profile.subscription_active = True
+            profile.subscription_start = timezone.now()
+            profile.subscription_end = timezone.now() + timedelta(days=30)
+            profile.save()
