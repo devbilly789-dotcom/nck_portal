@@ -17,7 +17,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Allowed hosts (your Render URL)
-ALLOWED_HOSTS = ['nck-portal-8.onrender.com']
+ALLOWED_HOSTS = ['nck-portal-9.onrender.com']
 
 # CSRF trusted origins for production
 CSRF_TRUSTED_ORIGINS = [
