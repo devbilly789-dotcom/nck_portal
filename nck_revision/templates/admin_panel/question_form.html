@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - NCK Prep{% endblock %}
+{% block content %}
+<div class="admin-page">
+    <div class="admin-header">
+        <h1>{{ title }}</h1>
+        <a href="{% url 'manage_questions' %}" class="btn-back">← Back</a>
+    </div>
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<small class="help-text">{{ field.help_text }}</small>{% endif %}
+                {% if field.errors %}<span class="field-error">{{ field.errors.0 }}</span>{% endif %}
+            </div>
+            {% endfor %}
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Save Question</button>
+                <a href="{% url 'manage_questions' %}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

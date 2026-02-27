@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Login - NCK Prep{% endblock %}
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">🏥</div>
+            <h1>NCK<span style="color:#1a73e8">Prep</span></h1>
+            <p>Nursing Council of Kenya Exam Revision</p>
+        </div>
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <span class="field-error">{{ field.errors.0 }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <div class="auth-footer">
+            New student? <a href="{% url 'register' %}">Create account</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

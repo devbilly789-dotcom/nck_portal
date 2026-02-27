@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Payment - NCK Prep{% endblock %}
+{% block content %}
+<div class="payment-page">
+    <div class="payment-card">
+        <div class="payment-header">
+            <div class="payment-icon">💚</div>
+            <h1>Subscribe to NCK Prep</h1>
+            <p>Get full access to BSN & KRCHN exam questions</p>
+        </div>
+
+        <div class="mpesa-box">
+            <div class="mpesa-logo">M-PESA</div>
+            <div class="mpesa-steps">
+                <div class="step">
+                    <span class="step-num">1</span>
+                    <div class="step-text">
+                        <strong>Go to M-PESA</strong>
+                        <p>Open M-PESA on your phone</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-num">2</span>
+                    <div class="step-text">
+                        <strong>Send Money</strong>
+                        <p>Select "Send Money" option</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-num">3</span>
+                    <div class="step-text">
+                        <strong>Enter Details</strong>
+                        <div class="mpesa-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Number:</span>
+                                <span class="detail-value" id="mpesa-number">0114245222</span>
+                                <button class="copy-btn" onclick="copyText('0114245222')">Copy</button>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Amount:</span>
+                                <span class="detail-value">KES 200</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-num">4</span>
+                    <div class="step-text">
+                        <strong>Paste M-PESA Code</strong>
+                        <p>Copy the confirmation code from SMS</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if pending %}
+        <div class="pending-notice">
+            <div class="pending-icon">⏳</div>
+            <h3>Payment Under Review</h3>
+            <p>Your code <strong>{{ pending.mpesa_code }}</strong> has been submitted and is awaiting admin approval.</p>
+            <p class="pending-sub">You'll be redirected automatically once approved. Please check back soon.</p>
+            <button class="btn-check" onclick="checkApproval()">Check Status</button>
+        </div>
+        {% else %}
+        <form method="post" class="payment-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>{{ form.mpesa_code.label }}</label>
+                {{ form.mpesa_code }}
+                {% if form.mpesa_code.errors %}
+                <span class="field-error">{{ form.mpesa_code.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn-primary btn-green">Submit Payment Code</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        btn.style.background = '#34a853';
+        setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; }, 2000);
+    });
+}
+function checkApproval() {
+    fetch('{% url "check_approval" %}')
+        .then(r => r.json())
+        .then(data => {
+            if (data.approved) {
+                window.location.href = '{% url "home" %}';
+            } else {
+                alert('Still pending. Please wait for admin approval.');
+            }
+        });
+}
+// Auto-check every 30 seconds if pending
+{% if pending %}
+setInterval(checkApproval, 30000);
+{% endif %}
+</script>
+{% endblock %}

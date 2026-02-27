@@ -1,0 +1,33 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Students - NCK Hub Admin{% endblock %}
+{% block admin_content %}
+<h2 style="font-size:1rem; font-weight:700; margin-bottom:1rem; color:var(--navy);">
+    <i class="fas fa-users"></i> Students ({{ profiles.count }})
+</h2>
+{% for profile in profiles %}
+<div style="background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:0.75rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+    <div style="width:44px;height:44px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;">
+        {{ profile.user.first_name.0|default:profile.user.username.0|upper }}
+    </div>
+    <div style="flex:1;">
+        <div style="font-weight:700;color:var(--navy);">{{ profile.user.get_full_name|default:profile.user.username }}</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);">
+            {{ profile.user.email }} · {{ profile.phone_number }}
+        </div>
+        <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;">
+            <span class="badge badge-navy">{{ profile.course }}</span>
+            {% if profile.is_subscription_active %}
+            <span class="badge badge-green"><i class="fas fa-check"></i> Active until {{ profile.subscription_expiry|date:"M d, Y" }}</span>
+            {% else %}
+            <span class="badge badge-red">No Subscription</span>
+            {% endif %}
+        </div>
+    </div>
+    <div style="font-size:0.78rem;color:var(--text-muted);">
+        Joined {{ profile.user.date_joined|date:"M d, Y" }}
+    </div>
+</div>
+{% empty %}
+<div style="text-align:center;padding:2rem;color:var(--text-muted);">No students registered yet.</div>
+{% endfor %}
+{% endblock %}

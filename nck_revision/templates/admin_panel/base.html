@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block extra_css %}
+<style>
+.admin-header { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); color: white; padding: 1rem 1.2rem; border-radius: var(--radius); margin-bottom: 1.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+.admin-header h1 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.admin-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.admin-nav a { padding: 6px 14px; border-radius: 8px; text-decoration: none; font-size: 0.82rem; font-weight: 600; background: var(--surface); color: var(--text-muted); border: 1.5px solid var(--border); transition: all 0.2s; }
+.admin-nav a:hover, .admin-nav a.active { background: var(--teal); color: white; border-color: var(--teal); }
+.admin-nav a .badge { background: var(--gold); color: var(--navy); margin-left: 4px; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="admin-header">
+    <h1><i class="fas fa-shield-alt"></i> Admin Panel</h1>
+    <span style="font-size:0.82rem; opacity:0.75;">Logged in as {{ request.user.username }}</span>
+</div>
+<div class="admin-nav">
+    <a href="{% url 'admin_panel:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+    </a>
+    <a href="{% url 'admin_panel:payments' %}" class="{% if 'payment' in request.resolver_match.url_name %}active{% endif %}">
+        <i class="fas fa-money-bill-wave"></i> Payments
+    </a>
+    <a href="{% url 'admin_panel:questions' %}" class="{% if 'question' in request.resolver_match.url_name %}active{% endif %}">
+        <i class="fas fa-question-circle"></i> Questions
+    </a>
+    <a href="{% url 'admin_panel:students' %}" class="{% if request.resolver_match.url_name == 'students' %}active{% endif %}">
+        <i class="fas fa-users"></i> Students
+    </a>
+    <a href="{% url 'questions:home' %}">
+        <i class="fas fa-book-open"></i> View Questions
+    </a>
+</div>
+{% block admin_content %}{% endblock %}
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}NCK Revision{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="manifest" href="#">
+    <meta name="theme-color" content="#1a73e8">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">🏥</span>
+            <span class="brand-text">NCK<span class="brand-accent">Prep</span></span>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="nav-links">
+            {% if user.is_staff %}
+                <a href="{% url 'admin_panel' %}" class="nav-link">Dashboard</a>
+            {% else %}
+                <a href="{% url 'home' %}" class="nav-link">Questions</a>
+            {% endif %}
+            <div class="nav-user">
+                <span>{{ user.first_name }}</span>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+        {% endif %}
+    </nav>
+
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

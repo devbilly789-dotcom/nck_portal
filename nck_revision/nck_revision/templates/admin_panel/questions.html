@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Manage Questions - NCK Prep{% endblock %}
+{% block content %}
+<div class="admin-page">
+    <div class="admin-header">
+        <h1>Manage Questions</h1>
+        <a href="{% url 'add_question' %}" class="btn-primary">➕ Add Question</a>
+    </div>
+
+    <div class="filter-bar">
+        <form method="get" class="filter-form">
+            <select name="course" class="filter-select" onchange="this.form.submit()">
+                <option value="">All Courses</option>
+                <option value="BSN" {% if course_filter == 'BSN' %}selected{% endif %}>BSN</option>
+                <option value="KRCHN" {% if course_filter == 'KRCHN' %}selected{% endif %}>KRCHN</option>
+            </select>
+        </form>
+        <a href="{% url 'admin_panel' %}" class="btn-back">← Dashboard</a>
+    </div>
+
+    <div class="questions-admin-list">
+        {% for q in questions %}
+        <div class="admin-question-item">
+            <div class="aq-meta">
+                <span class="q-category">{{ q.category.course }} - {{ q.category.name }}</span>
+                <span class="q-difficulty difficulty-{{ q.difficulty }}">{{ q.get_difficulty_display }}</span>
+                {% if not q.is_active %}<span class="badge-inactive">Hidden</span>{% endif %}
+            </div>
+            <p class="aq-text">{{ q.question_text|truncatechars:100 }}</p>
+            <div class="aq-actions">
+                <a href="{% url 'edit_question' q.pk %}" class="btn-edit">✏️ Edit</a>
+                <form method="post" action="{% url 'delete_question' q.pk %}" style="display:inline"
+                      onsubmit="return confirm('Delete this question?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">🗑️ Delete</button>
+                </form>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state"><p>No questions yet. <a href="{% url 'add_question' %}">Add one</a>!</p></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

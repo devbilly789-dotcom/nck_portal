@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Questions - NCK Prep{% endblock %}
+{% block content %}
+<div class="questions-page">
+    <!-- Course Tabs -->
+    <div class="course-tabs">
+        <a href="?course=BSN" class="course-tab {% if selected_course == 'BSN' %}active{% endif %}">
+            <span class="tab-icon">🎓</span> BSN
+        </a>
+        <a href="?course=KRCHN" class="course-tab {% if selected_course == 'KRCHN' %}active{% endif %}">
+            <span class="tab-icon">🏥</span> KRCHN
+        </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <form method="get" class="filter-form">
+            <input type="hidden" name="course" value="{{ selected_course }}">
+            <div class="filter-row">
+                <select name="category" class="filter-select" onchange="this.form.submit()">
+                    <option value="">All Topics</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if selected_cat == cat.id|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <div class="search-box">
+                    <input type="text" name="search" value="{{ search }}" placeholder="Search questions..." class="search-input">
+                    <button type="submit" class="search-btn">🔍</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <span class="stat">📋 {{ questions.count }} question{{ questions.count|pluralize }}</span>
+        <span class="stat">📚 {{ selected_course }}</span>
+    </div>
+
+    <!-- Questions Grid -->
+    <div class="questions-grid">
+        {% for question in questions %}
+        <div class="question-card" onclick="toggleAnswer(this)">
+            <div class="q-header">
+                <div class="q-meta">
+                    <span class="q-category">{{ question.category.name }}</span>
+                    <span class="q-difficulty difficulty-{{ question.difficulty }}">{{ question.get_difficulty_display }}</span>
+                </div>
+                <span class="q-number">Q{{ forloop.counter }}</span>
+            </div>
+            <div class="q-body">
+                <p class="q-text">{{ question.question_text }}</p>
+            </div>
+            <div class="q-toggle">
+                <span class="toggle-hint">Tap to reveal answer 👆</span>
+            </div>
+            <div class="q-answer" style="display:none;">
+                <div class="answer-divider"><span>Answer</span></div>
+                <p class="answer-text">{{ question.answer }}</p>
+                {% if question.explanation %}
+                <div class="explanation">
+                    <span class="exp-label">💡 Explanation</span>
+                    <p>{{ question.explanation }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h3>No questions found</h3>
+            <p>Try changing your filters or search term</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

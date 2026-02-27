@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard - NCK Prep{% endblock %}
+{% block content %}
+<div class="admin-page">
+    <div class="admin-header">
+        <h1>Admin Dashboard</h1>
+        <p>Manage students, payments, and questions</p>
+    </div>
+
+    <div class="admin-stats">
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-info">
+                <span class="stat-num">{{ pending_payments.count }}</span>
+                <span class="stat-label">Pending Payments</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+                <span class="stat-num">{{ total_users }}</span>
+                <span class="stat-label">Active Students</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-info">
+                <span class="stat-num">{{ total_questions }}</span>
+                <span class="stat-label">Total Questions</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-actions">
+        <a href="{% url 'add_question' %}" class="admin-btn btn-blue">➕ Add Question</a>
+        <a href="{% url 'manage_questions' %}" class="admin-btn btn-gray">📋 Manage Questions</a>
+        <a href="{% url 'manage_categories' %}" class="admin-btn btn-purple">📁 Manage Categories</a>
+    </div>
+
+    <div class="admin-section">
+        <h2>Pending Payments</h2>
+        {% if pending_payments %}
+        <div class="payments-list">
+            {% for payment in pending_payments %}
+            <div class="payment-item">
+                <div class="payment-info">
+                    <div class="payer-name">{{ payment.user.get_full_name|default:payment.user.username }}</div>
+                    <div class="payer-details">
+                        <span>📞 {{ payment.user.phone }}</span>
+                        <span>📧 {{ payment.user.email }}</span>
+                    </div>
+                    <div class="mpesa-code-display">
+                        <span class="code-label">M-PESA Code:</span>
+                        <span class="code-value">{{ payment.mpesa_code }}</span>
+                    </div>
+                    <div class="payment-date">Submitted: {{ payment.submitted_at|date:"d M Y, H:i" }}</div>
+                </div>
+                <div class="payment-actions">
+                    <form method="post" action="{% url 'approve_payment' payment.id %}" style="display:inline">
+                        {% csrf_token %}
+                        <button name="action" value="approve" class="btn-approve">✅ Approve</button>
+                    </form>
+                    <form method="post" action="{% url 'approve_payment' payment.id %}" style="display:inline">
+                        {% csrf_token %}
+                        <button name="action" value="reject" class="btn-reject">❌ Reject</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state small">
+            <p>✅ No pending payments</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Awaiting Approval - NCK Revision Hub{% endblock %}
+{% block extra_css %}
+<style>
+.pending-wrap { max-width: 440px; margin: 2rem auto; text-align: center; }
+.pending-icon { width: 80px; height: 80px; background: #fff8e1; border: 3px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.2rem; color: var(--gold); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+.code-display { font-family: 'Fira Code', monospace; font-size: 1.3rem; font-weight: 700; background: var(--teal-light); color: var(--teal-dark); padding: 0.6rem 1.5rem; border-radius: 10px; display: inline-block; letter-spacing: 2px; margin: 0.5rem 0; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="pending-wrap">
+    <div class="pending-icon"><i class="fas fa-clock"></i></div>
+    <h1 style="font-size:1.4rem; font-weight:700; color:var(--navy); margin-bottom:0.5rem;">Payment Under Review</h1>
+    <p style="color:var(--text-muted); margin-bottom:1.5rem;">Your payment has been received and is waiting for admin approval.</p>
+
+    {% if payment %}
+    <div class="card mb-2">
+        <div class="card-body">
+            <div style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Your M-Pesa Code</div>
+            <div class="code-display">{{ payment.mpesa_code }}</div>
+            <div style="font-size:0.82rem; color:var(--text-muted); margin-top:0.5rem;">Submitted on {{ payment.submitted_at|date:"M d, Y H:i" }}</div>
+            <div style="margin-top:0.8rem;">
+                <span class="badge badge-gold"><i class="fas fa-hourglass-half"></i> Pending Approval</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body">
+            <div class="alert alert-info" style="text-align:left;">
+                <i class="fas fa-info-circle"></i>
+                Admin approves payments manually. You'll gain access within <strong>a few minutes to a few hours</strong>.
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Refresh this page to check if you've been approved.</p>
+            <a href="{% url 'accounts:payment_pending' %}" class="btn btn-outline btn-block">
+                <i class="fas fa-sync-alt"></i> Refresh Status
+            </a>
+        </div>
+    </div>
+    <div style="margin-top:1rem;">
+        <a href="{% url 'accounts:logout' %}" style="color:var(--text-muted); font-size:0.85rem; text-decoration:none;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Review Payment - NCK Hub Admin{% endblock %}
+{% block extra_css %}
+{{ block.super }}
+<style>
+.review-wrap { max-width: 500px; }
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0; border-bottom: 1px solid var(--border); font-size:0.9rem; }
+.info-row:last-child { border-bottom: none; }
+.info-label { color: var(--text-muted); font-weight:600; font-size:0.82rem; }
+.mpesa-big { font-family:'Fira Code',monospace; font-size:1.4rem; font-weight:800; color: var(--teal); background: var(--teal-light); padding: 0.5rem 1rem; border-radius:10px; }
+.action-btns { display: flex; gap: 0.75rem; margin-top:1.2rem; flex-wrap:wrap; }
+</style>
+{% endblock %}
+{% block admin_content %}
+<div class="review-wrap">
+    <h2 style="font-size:1rem; font-weight:700; margin-bottom:1rem; color:var(--navy);">
+        <i class="fas fa-user-check"></i> Review Payment
+    </h2>
+
+    <div class="card mb-2">
+        <div class="card-header"><span style="font-weight:700;">Payment Details</span></div>
+        <div class="card-body">
+            <div class="info-row">
+                <span class="info-label">Student Name</span>
+                <strong>{{ payment.user.get_full_name|default:payment.user.username }}</strong>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Username</span>
+                <span>{{ payment.user.username }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Course</span>
+                <span class="badge badge-teal">{{ payment.user.profile.course }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Phone</span>
+                <span>{{ payment.user.profile.phone_number }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Amount</span>
+                <strong style="color:var(--green);">KES {{ payment.amount }}</strong>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Submitted</span>
+                <span>{{ payment.submitted_at|date:"M d, Y H:i" }}</span>
+            </div>
+            <div style="padding:1rem 0; text-align:center;">
+                <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.4rem;">M-PESA CODE</div>
+                <div class="mpesa-big">{{ payment.mpesa_code }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><span style="font-weight:700;"><i class="fas fa-gavel"></i> Take Action</span></div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Verify this M-Pesa code in your M-Pesa transaction history before approving.
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="action-btns">
+                    <button type="submit" name="action" value="approve" class="btn btn-primary" style="background:var(--green);">
+                        <i class="fas fa-check"></i> Approve & Activate (30 days)
+                    </button>
+                    <button type="submit" name="action" value="reject" class="btn btn-danger" onclick="return confirm('Reject this payment?')">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div style="margin-top:1rem;">
+        <a href="{% url 'admin_panel:payments' %}" style="color:var(--text-muted); font-size:0.85rem; text-decoration:none;">
+            <i class="fas fa-arrow-left"></i> Back to Payments
+        </a>
+    </div>
+</div>
+{% endblock %}
