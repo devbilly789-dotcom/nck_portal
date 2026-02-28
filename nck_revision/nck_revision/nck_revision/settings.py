@@ -4,7 +4,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nck-revision-secret-key-change-in-production-2024'
 DEBUG = True
 # Allowed hosts (your Render URL)
-ALLOWED_HOSTS = ['nck-portal-12.onrender.com']
+ALLOWED_HOSTS = ['nck-portal-13.onrender.com']
 
 # CSRF trusted origins for production
 CSRF_TRUSTED_ORIGINS = [
