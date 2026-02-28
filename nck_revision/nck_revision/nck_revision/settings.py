@@ -3,7 +3,13 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nck-revision-secret-key-change-in-production-2024'
 DEBUG = True
-ALLOWED_HOSTS = ['*']
+# Allowed hosts (your Render URL)
+ALLOWED_HOSTS = ['nck-portal-12.onrender.com']
+
+# CSRF trusted origins for production
+CSRF_TRUSTED_ORIGINS = [
+    'https://nck-portal.onrender.com',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
